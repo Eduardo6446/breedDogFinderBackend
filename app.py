@@ -19,7 +19,7 @@ with open("class_labels.json", "r") as f:
     labels = json.load(f)
 
 # Cargar modelo
-model = tf.keras.models.load_model("model/bdf_81.keras")
+model = tf.keras.models.load_model("model/model.keras")
 
 app = Flask(__name__)
 
