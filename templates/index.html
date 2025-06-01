@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Clasificador de paisajes</title>
+</head>
+<body>
+    <h1>Sube una imagen de paisaje</h1>
+    <form method="POST" enctype="multipart/form-data">
+        <input type="file" name="image" accept="image/*" required>
+        <button type="submit">Predecir</button>
+    </form>
+
+    {% if prediction %}
+        <h2>{{ prediction }}</h2>
+        <img src="{{ image_path }}" alt="Imagen subida" width="300">
+    {% endif %}
+</body>
+</html>
