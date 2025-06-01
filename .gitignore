@@ -1,4 +1,4 @@
 .env
-.gitignore
 .venv
-.idea
+/dogs
+/model/baseline_model.h5
