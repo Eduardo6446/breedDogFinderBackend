@@ -18,8 +18,13 @@ UMBRAL_FIABILIDAD = 15
 with open("class_labels.json", "r") as f:
     labels = json.load(f)
 
-# Cargar modelo
-model = tf.keras.models.load_model("model/model.tflite")
+# Cargar modelo TFLite
+interpreter = tf.lite.Interpreter(model_path="model/model.tflite")
+interpreter.allocate_tensors()
+
+# Obtener detalles de entrada y salida
+input_details = interpreter.get_input_details()
+output_details = interpreter.get_output_details()
 
 app = Flask(__name__)
 
@@ -40,13 +45,19 @@ def predict():
         image_data = base64.b64decode(data["base64"])
         image = Image.open(BytesIO(image_data)).convert("RGB")
         image = image.resize((224, 224))
-        image_array = np.array(image) / 255.0
+        image_array = np.array(image, dtype=np.float32) / 255.0
         image_array = np.expand_dims(image_array, axis=0)
 
-        # Hacer predicción
-        prediction = model.predict(image_array)[0]
-        accuracy = float(np.max(prediction)) * 100
-        predicted_class = int(np.argmax(prediction))
+        # Preparar entrada
+        interpreter.set_tensor(input_details[0]['index'], image_array)
+
+        # Ejecutar predicción
+        interpreter.invoke()
+
+        # Obtener resultados
+        output_data = interpreter.get_tensor(output_details[0]['index'])[0]
+        accuracy = float(np.max(output_data)) * 100
+        predicted_class = int(np.argmax(output_data))
         breed = labels[str(predicted_class)]
 
         response = {
