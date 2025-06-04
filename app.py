@@ -28,7 +28,7 @@ output_details = interpreter.get_output_details()
 
 app = Flask(__name__)
 
-@app.route("/status", methods=["GET"])
+@app.route("/start", methods=["GET"])
 def index():
     # Verifica la API key
     client_key = request.headers.get("x-api-key")
