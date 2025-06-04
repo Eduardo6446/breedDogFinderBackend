@@ -28,6 +28,17 @@ output_details = interpreter.get_output_details()
 
 app = Flask(__name__)
 
+@app.route("/status", methods=["GET"])
+def index():
+    # Verifica la API key
+    client_key = request.headers.get("x-api-key")
+    if client_key != API_KEY:
+        return jsonify({"error": "Unauthorized"}), 401
+    # Verifica que el modelo esté cargado
+    if not interpreter:
+        return jsonify({"error": "Model not loaded"}), 500
+    return jsonify({"status": "ok"}), 200
+
 @app.route("/predict", methods=["POST"])
 def predict():
     # Verifica la API key
